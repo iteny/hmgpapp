@@ -1,4 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hmgpapp/model/CategoryModel.dart';
+import '../../config/Config.dart';
 import '../../common/Color.dart';
 import '../../common/Icons.dart';
 import '../../common/ScreenAdapter.dart';
@@ -12,6 +15,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List _hotProductList = [];
+  @override
+  void initState() {
+    super.initState();
+    _getCategory();
+  }
+
+  //获取分类
+  _getCategory() async {
+    var api = '${Config.domain}gpapp/getCategory';
+    var result = await Dio().post(api);
+    var hotProductList = CategoryModel.fromJson(result.data);
+    hotProductList.data?.forEach((data) {
+      print(data.name);
+      print(data.url);
+    });
+    setState(() {
+      this._hotProductList = hotProductList.data!;
+    });
+  }
+
   _getContent() {
     var itemWidth = (ScreenAdapter.getWidth() - 60.0) / 4;
     print(itemWidth);
