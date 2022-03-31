@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hmgpapp/model/CategoryModel.dart';
@@ -15,7 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List _hotProductList = [];
+  List _categoryList = [];
   @override
   void initState() {
     super.initState();
@@ -26,92 +28,121 @@ class _HomePageState extends State<HomePage> {
   _getCategory() async {
     var api = '${Config.domain}gpapp/getCategory';
     var result = await Dio().post(api);
-    var hotProductList = CategoryModel.fromJson(result.data);
-    hotProductList.data?.forEach((data) {
-      print(data.name);
-      print(data.url);
-    });
+    // print(result.data is Map);
+    var categoryList = CategoryModel.fromJson(result.data);
+    // categoryList.data?.forEach((value) {
+    //   print(value.name);
+    //   print(value.url);
+    // });
     setState(() {
-      this._hotProductList = hotProductList.data!;
+      this._categoryList = categoryList.data!;
     });
   }
 
-  _getContent() {
-    var itemWidth = (ScreenAdapter.getWidth() - 60.0) / 4;
+  Widget _getContent() {
+    var itemWidth = (ScreenAdapter.getWidth() - 50.0) / 4;
     print(itemWidth);
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: Wrap(
-        runSpacing: 10, //中间的间距10
-        spacing: 10,
-        children: [
-          InkWell(
-            child: Container(
-              width: itemWidth,
-              child: Column(
-                children: [Icon(Icons.add), Text("asdfads")],
+    if (this._categoryList.length > 0) {
+      return Container(
+        padding: EdgeInsets.all(10),
+        child: Wrap(
+          runSpacing: 10, //中间的间距10
+          spacing: 10,
+          children: this._categoryList.map((value) {
+            return InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, '/productContent',
+                    arguments: {"id": value.sId});
+              },
+              child: Container(
+                width: itemWidth,
+                child: Column(
+                  children: [
+                    Icon(
+                      IconData(int.parse(value.icon), fontFamily: 'iconfont'),
+                    ),
+                    Text("${value.name}")
+                  ],
+                ),
               ),
-            ),
-          ),
-          InkWell(
-            child: Container(
-              width: itemWidth,
-              child: Column(
-                children: [Icon(Icons.add), Text("asdfads")],
-              ),
-            ),
-          ),
-          InkWell(
-            child: Container(
-              width: itemWidth,
-              child: Column(
-                children: [Icon(Icons.add), Text("asdfads")],
-              ),
-            ),
-          ),
-          InkWell(
-            child: Container(
-              width: itemWidth,
-              child: Column(
-                children: [Icon(Icons.add), Text("asdfads")],
-              ),
-            ),
-          ),
-          InkWell(
-            child: Container(
-              width: itemWidth,
-              child: Column(
-                children: [Icon(Icons.add), Text("asdfads")],
-              ),
-            ),
-          ),
-          InkWell(
-            child: Container(
-              width: itemWidth,
-              child: Column(
-                children: [Icon(Icons.add), Text("asdfads")],
-              ),
-            ),
-          ),
-          InkWell(
-            child: Container(
-              width: itemWidth,
-              child: Column(
-                children: [Icon(Icons.add), Text("asdfads")],
-              ),
-            ),
-          ),
-          InkWell(
-            child: Container(
-              width: itemWidth,
-              child: Column(
-                children: [Icon(Icons.add), Text("asdfads")],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+            );
+          }).toList(),
+        ),
+      );
+
+      // child: Wrap(
+      //   runSpacing: 10, //中间的间距10
+      //   spacing: 10,
+      //   children: [
+      //     InkWell(
+      //       child: Container(
+      //         width: itemWidth,
+      //         child: Column(
+      //           children: [Icon(Icons.add), Text("asdfads")],
+      //         ),
+      //       ),
+      //     ),
+      //     InkWell(
+      //       child: Container(
+      //         width: itemWidth,
+      //         child: Column(
+      //           children: [Icon(Icons.add), Text("asdfads")],
+      //         ),
+      //       ),
+      //     ),
+      //     InkWell(
+      //       child: Container(
+      //         width: itemWidth,
+      //         child: Column(
+      //           children: [Icon(Icons.add), Text("asdfads")],
+      //         ),
+      //       ),
+      //     ),
+      //     InkWell(
+      //       child: Container(
+      //         width: itemWidth,
+      //         child: Column(
+      //           children: [Icon(Icons.add), Text("asdfads")],
+      //         ),
+      //       ),
+      //     ),
+      //     InkWell(
+      //       child: Container(
+      //         width: itemWidth,
+      //         child: Column(
+      //           children: [Icon(Icons.add), Text("asdfads")],
+      //         ),
+      //       ),
+      //     ),
+      //     InkWell(
+      //       child: Container(
+      //         width: itemWidth,
+      //         child: Column(
+      //           children: [Icon(Icons.add), Text("asdfads")],
+      //         ),
+      //       ),
+      //     ),
+      //     InkWell(
+      //       child: Container(
+      //         width: itemWidth,
+      //         child: Column(
+      //           children: [Icon(Icons.add), Text("asdfads")],
+      //         ),
+      //       ),
+      //     ),
+      //     InkWell(
+      //       child: Container(
+      //         width: itemWidth,
+      //         child: Column(
+      //           children: [Icon(Icons.add), Text("asdfads")],
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+    } else {
+      return Text("加载中");
+    }
   }
 
   @override

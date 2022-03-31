@@ -23,11 +23,11 @@ class CategoryModel {
 
 class CategoryItemModel {
   int? id;
-  Object? url;
-  Object? name;
+  String? url;
+  String? name;
   int? status;
   int? sort;
-  Object? icon;
+  String? icon;
 
   CategoryItemModel(
       {this.id, this.url, this.name, this.status, this.sort, this.icon});
