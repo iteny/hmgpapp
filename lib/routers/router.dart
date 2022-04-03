@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../pages/CategoryContent.dart';
 import '../pages/tabs.dart';
 // import 'package:jdshop/pages/ProductContent.dart';
 // import 'package:jdshop/pages/ProductList.dart';
@@ -10,8 +11,8 @@ final routes = {
   // '/search': (context) => SearchPage(),
   // '/productList': (context, {arguments}) =>
   //     ProductListPage(arguments: arguments),
-  // '/productContent': (context, {arguments}) =>
-  //     ProductContentPage(arguments: arguments),
+  '/categoryContent': (context, {arguments}) =>
+      CategoryContentPage(arguments: arguments),
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {

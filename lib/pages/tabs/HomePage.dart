@@ -51,8 +51,8 @@ class _HomePageState extends State<HomePage> {
           children: this._categoryList.map((value) {
             return InkWell(
               onTap: () {
-                Navigator.pushNamed(context, '/productContent',
-                    arguments: {"id": value.sId});
+                Navigator.pushNamed(context, '/categoryContent',
+                    arguments: {"id": value.id});
               },
               child: Container(
                 width: itemWidth,
