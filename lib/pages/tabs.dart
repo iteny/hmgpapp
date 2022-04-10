@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hmgpapp/pages/tabs/SelfPage.dart';
 import '../common/Storage.dart';
 import '../pages/tabs/HomePage.dart';
 import '../common/Icons.dart';
@@ -29,6 +30,7 @@ class _TabsState extends State<Tabs> {
 
   List<Widget> _pageList = [
     HomePage(),
+    SelfPage(),
     // CategoryPage(),
     // CartPage(),
     // UserPage(),
@@ -112,7 +114,7 @@ class _TabsState extends State<Tabs> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Iconme.record),
-            label: '记录',
+            label: '自选',
           ),
           BottomNavigationBarItem(
             icon: Icon(Iconme.accound),

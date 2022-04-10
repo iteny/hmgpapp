@@ -45,6 +45,11 @@ dependencies:
   #本地存储
   shared_preferences: ^2.0.12
   #图标库
+  #gbk库
+  fast_gbk: 1.0.0
+  # gbk2utf8: ^1.0.0
+  # gbk_codec: ^0.4.0
+
 
 dev_dependencies:
   flutter_test:
