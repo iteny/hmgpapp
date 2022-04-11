@@ -11,7 +11,7 @@ class SelfPage extends StatefulWidget {
 }
 
 class _SelfPageState extends State<SelfPage> {
-  List _selfData = [];
+  List<List<String?>> _selfData = [[]];
 
   // ResponseDecoder? get gbkDecoder => null;
   String gbkDecoder(List<int> responseBytes, RequestOptions options,
@@ -40,37 +40,38 @@ class _SelfPageState extends State<SelfPage> {
 
     print(result.data);
     print("去你大爷");
-    // List<int> gbkCodes = gbk.encode(result.data);
-    // String hex = '';
-    // gbkCodes.forEach((i) {
-    //   hex += i.toRadixString(16) + ' ';
-    // });
-    // print(hex);
-    // print(gbk.decode(gbkCodes));
-    // List<int> gbk_byteCodes = gbk_bytes.encode(result.data);
-    // hex = '';
-    // gbk_byteCodes.forEach((i) {
-    //   hex += i.toRadixString(16) + ' ';
-    // });
-    // print(hex);
-
-    // //gbk_bytes decode
-    // String decoded_bytes_text = gbk_bytes.decode(gbk_byteCodes);
-    // print(decoded_bytes_text);
     String sss = result.data;
-    // var encoded = gbk.encode(result.data);
-    // var decoded = gbk.decode(encoded);
-    // print(decoded);
     print("去你吗");
     List<String> list = sss.split(';');
-    print(list);
-    print(list is List);
+    // print(list);
+    // print(list is List);
+    // print(list.length);
+    list.removeLast();
     print(list.length);
+    List<String?> stocks = [];
+    List<List<String?>> stockInfo = [];
+    for (String value in list) {
+      // print("我得名字${value}");
+      RegExp stock = new RegExp("var hq_str_sh([^}]+)=");
+      var stockNumber = stock.firstMatch(value);
+      print(stockNumber!.group(1));
+      var stockNumberOne = stockNumber.group(1);
+      RegExp r = new RegExp("\"([^}]+)\"");
+      var rnum = r.firstMatch(value);
+      print(rnum?.group(1));
+      var rnumber = rnum!.group(1);
+      print(rnumber is String);
+      List<String> stockNumberTwo = rnumber!.split(',');
+      stocks.add(stockNumberOne);
+      stocks.addAll(stockNumberTwo);
+      stockInfo.add(stocks);
+    }
+    print(stockInfo);
     // var categoryContentData = CategoryContentModel.fromJson(result.data);
     // print(categoryContentData.result);
     // print(categoryContentData.data);
     setState(() {
-      this._selfData = list;
+      this._selfData = stockInfo;
     });
   }
 
@@ -89,9 +90,7 @@ class _SelfPageState extends State<SelfPage> {
           // scrollDirection: Axis.horizontal,
           itemBuilder: (contxt, index) {
             return Column(
-              children: [
-                Text(this._selfData[index]),
-              ],
+              children: [Text(this._selfData[index][0].toString())],
             );
           },
           itemCount: this._selfData.length,
