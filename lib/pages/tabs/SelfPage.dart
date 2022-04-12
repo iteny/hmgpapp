@@ -1,6 +1,9 @@
+import 'dart:async';
+// import 'dart:html';
 import 'package:dio/dio.dart';
 import 'package:fast_gbk/fast_gbk.dart';
 import 'package:flutter/material.dart';
+import 'package:hmgpapp/common/Color.dart';
 import '../../common/ScreenAdapter.dart';
 
 class SelfPage extends StatefulWidget {
@@ -48,54 +51,106 @@ class _SelfPageState extends State<SelfPage> {
     // print(list.length);
     list.removeLast();
     print(list.length);
-    List<String?> stocks = [];
-    List<List<String?>> stockInfo = [];
+    // List<String> stocks = [];
+    List<List<String>> stockInfo = [];
     for (String value in list) {
       // print("我得名字${value}");
       RegExp stock = new RegExp("var hq_str_sh([^}]+)=");
       var stockNumber = stock.firstMatch(value);
-      print(stockNumber!.group(1));
-      var stockNumberOne = stockNumber.group(1);
-      RegExp r = new RegExp("\"([^}]+)\"");
+      // print(stockNumber!.group(1));
+      var stockNumberOne = stockNumber!.group(1);
+      var stockNumberOnes = stockNumberOne!.toLowerCase();
+      RegExp r = new RegExp("\"([^}]+),\"");
       var rnum = r.firstMatch(value);
-      print(rnum?.group(1));
+      // print(rnum?.group(1));
       var rnumber = rnum!.group(1);
-      print(rnumber is String);
+      // print(rnumber);
       List<String> stockNumberTwo = rnumber!.split(',');
-      stocks.add(stockNumberOne);
-      stocks.addAll(stockNumberTwo);
-      stockInfo.add(stocks);
+      // print(stockNumberTwo);
+      // stocks.add(stockNumberOnes);
+      // stocks.addAll(stockNumberTwo);
+      stockNumberTwo.add(stockNumberOnes);
+      // print(stockNumberTwo);
+      stockInfo.add(stockNumberTwo);
+      // stockInfo.add([]);
+
     }
-    print(stockInfo);
+    // print(stockInfo);
     // var categoryContentData = CategoryContentModel.fromJson(result.data);
     // print(categoryContentData.result);
     // print(categoryContentData.data);
+    stockInfo.add([]);
+    print(stockInfo);
     setState(() {
       this._selfData = stockInfo;
     });
   }
 
+  Widget _getSelfSelectDialog() {
+    var itemWidth = (ScreenAdapter.getWidth() - 10.0) / 4;
+    return Container(
+      width: ScreenAdapter.getWidth(),
+      decoration: BoxDecoration(color: Colour.black),
+      // height: ScreenAdapter.width(111400),
+      child: ListView.builder(
+        shrinkWrap: true,
+
+        // scrollDirection: Axis.horizontal,
+        itemBuilder: (contxt, index) {
+          return Column(
+            children: [
+              InkWell(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(ScreenAdapter.width(10), 0,
+                          ScreenAdapter.width(10), 0),
+                      height: 15,
+                      width: ScreenAdapter.width(200),
+                      child: Text(this._selfData[index][33]!.toString()),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(ScreenAdapter.width(10), 0,
+                          ScreenAdapter.width(10), 0),
+                      height: 15,
+                      width: ScreenAdapter.width(200),
+                      child: Text(this._selfData[index][33]!.toString()),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(ScreenAdapter.width(10), 0,
+                          ScreenAdapter.width(10), 0),
+                      height: 15,
+                      width: ScreenAdapter.width(200),
+                      child: Text(this._selfData[index][33]!.toString()),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(ScreenAdapter.width(10), 0,
+                          ScreenAdapter.width(10), 0),
+                      height: 15,
+                      width: ScreenAdapter.width(200),
+                      child: Text(this._selfData[index][33]!.toString()),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+        itemCount: this._selfData.length - 1,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("自选股"),
-      ),
-      body: Container(
-        width: ScreenAdapter.width(400),
-
-        // height: ScreenAdapter.width(111400),
-        child: ListView.builder(
-          shrinkWrap: true,
-          // scrollDirection: Axis.horizontal,
-          itemBuilder: (contxt, index) {
-            return Column(
-              children: [Text(this._selfData[index][0].toString())],
-            );
-          },
-          itemCount: this._selfData.length,
+        appBar: AppBar(
+          title: Text("自选股"),
         ),
-      ),
-    );
+        body: ListView(
+          children: [
+            _getSelfSelectDialog(),
+          ],
+        ));
   }
 }
