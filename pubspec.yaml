@@ -49,7 +49,8 @@ dependencies:
   fast_gbk: 1.0.0
   # gbk2utf8: ^1.0.0
   # gbk_codec: ^0.4.0
-
+  #水平左右滑动数据表格
+  horizontal_data_table: ^3.6.1+1
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hmgpapp/pages/tabs/SelfPage.dart';
+import '../pages/tabs/SelfPage.dart';
+import '../pages/tabs/SelfPageTest.dart';
 import '../common/Storage.dart';
 import '../pages/tabs/HomePage.dart';
 import '../common/Icons.dart';
@@ -31,7 +32,7 @@ class _TabsState extends State<Tabs> {
   List<Widget> _pageList = [
     HomePage(),
     SelfPage(),
-    // CategoryPage(),
+    SelfPageTest(),
     // CartPage(),
     // UserPage(),
   ];

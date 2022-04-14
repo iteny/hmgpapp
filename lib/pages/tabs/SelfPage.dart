@@ -46,39 +46,21 @@ class _SelfPageState extends State<SelfPage> {
     String sss = result.data;
     print("去你吗");
     List<String> list = sss.split(';');
-    // print(list);
-    // print(list is List);
-    // print(list.length);
     list.removeLast();
     print(list.length);
-    // List<String> stocks = [];
     List<List<String>> stockInfo = [];
     for (String value in list) {
-      // print("我得名字${value}");
       RegExp stock = new RegExp("var hq_str_sh([^}]+)=");
       var stockNumber = stock.firstMatch(value);
-      // print(stockNumber!.group(1));
       var stockNumberOne = stockNumber!.group(1);
       var stockNumberOnes = stockNumberOne!.toLowerCase();
       RegExp r = new RegExp("\"([^}]+),\"");
       var rnum = r.firstMatch(value);
-      // print(rnum?.group(1));
       var rnumber = rnum!.group(1);
-      // print(rnumber);
       List<String> stockNumberTwo = rnumber!.split(',');
-      // print(stockNumberTwo);
-      // stocks.add(stockNumberOnes);
-      // stocks.addAll(stockNumberTwo);
       stockNumberTwo.add(stockNumberOnes);
-      // print(stockNumberTwo);
       stockInfo.add(stockNumberTwo);
-      // stockInfo.add([]);
-
     }
-    // print(stockInfo);
-    // var categoryContentData = CategoryContentModel.fromJson(result.data);
-    // print(categoryContentData.result);
-    // print(categoryContentData.data);
     stockInfo.add([]);
     print(stockInfo);
     setState(() {
