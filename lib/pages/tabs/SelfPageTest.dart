@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:dio/dio.dart';
 import 'package:fast_gbk/fast_gbk.dart';
 import 'package:flutter/material.dart';
+import 'package:hmgpapp/common/Color.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
 class SelfPageTest extends StatefulWidget {
@@ -82,18 +85,22 @@ class _SelfPageTestState extends State<SelfPageTest> {
   Widget _getBodyWidget() {
     return Container(
       child: HorizontalDataTable(
-        leftHandSideColumnWidth: 100,
-        rightHandSideColumnWidth: 600,
+        leftHandSideColumnWidth: 80,
+        rightHandSideColumnWidth: 900,
+        // tableHeight: 700,
         isFixedHeader: true,
         headerWidgets: _getTitleWidget(),
         leftSideItemBuilder: _generateFirstColumnRow,
         rightSideItemBuilder: _generateRightHandSideColumnRow,
         itemCount: this._selfData.length - 1,
-        rowSeparatorWidget: const Divider(
-          color: Colors.black54,
-          height: 1.0,
-          thickness: 0.0,
-        ),
+        elevation: 0.0,
+        elevationColor: Colour.black,
+        // rowSeparatorWidget: const Divider(
+        //   //表格横线
+        //   color: Colors.grey,
+        //   height: 1.0,
+        //   thickness: 0.0,
+        // ),
         leftHandSideColBackgroundColor: Color(0xFFFFFFFF),
         rightHandSideColBackgroundColor: Color(0xFFFFFFFF),
         verticalScrollbarStyle: const ScrollbarStyle(
@@ -103,14 +110,14 @@ class _SelfPageTestState extends State<SelfPageTest> {
           radius: Radius.circular(5.0),
         ),
         horizontalScrollbarStyle: const ScrollbarStyle(
-          thumbColor: Colors.red,
+          thumbColor: Colors.grey,
           isAlwaysShown: true,
-          thickness: 4.0,
+          thickness: 1.5,
           radius: Radius.circular(5.0),
         ),
         enablePullToRefresh: true,
         refreshIndicator: const WaterDropHeader(),
-        refreshIndicatorHeight: 60,
+        refreshIndicatorHeight: 10,
         onRefresh: () async {
           //Do sth
           await Future.delayed(const Duration(milliseconds: 500));
@@ -159,19 +166,33 @@ class _SelfPageTestState extends State<SelfPageTest> {
       //     user.sortStatus(isAscending);
       //     setState(() {});
       //   },
-      _getTitleItemWidget('Phone111', 200),
+      // ),
+      _getTitleItemWidget('编辑', 100),
       // ),
       _getTitleItemWidget('最新', 100),
       _getTitleItemWidget('涨幅', 100),
       _getTitleItemWidget('涨跌', 100),
+      _getTitleItemWidget('成交量(手)', 100),
+      _getTitleItemWidget('成交额(万元)', 100),
+      _getTitleItemWidget('开盘', 100),
+      _getTitleItemWidget('昨收', 100),
+      _getTitleItemWidget('最高', 100),
+      _getTitleItemWidget('最低', 100),
     ];
   }
 
   Widget _getTitleItemWidget(String label, double width) {
     return Container(
-      child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+      decoration: BoxDecoration(
+          border:
+              Border(bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
+      child: Text(label,
+          style: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 12,
+          )),
       width: width,
-      height: 56,
+      height: 32,
       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.centerLeft,
     );
@@ -179,9 +200,27 @@ class _SelfPageTestState extends State<SelfPageTest> {
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
     return Container(
-      child: Text(this._selfData[index][33]!.toString()),
+      decoration: BoxDecoration(
+          border:
+              Border(bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
+      child: Column(
+        children: [
+          Text(
+            this._selfData[index][0]!.toString(),
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w500, color: Colour.black),
+          ),
+          Text(
+            this._selfData[index][33]!.toString(),
+            style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Color(0x99999999)),
+          ),
+        ],
+      ),
       width: 100,
-      height: 52,
+      height: 32,
       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.centerLeft,
     );
@@ -195,6 +234,16 @@ class _SelfPageTestState extends State<SelfPageTest> {
     var zhangfu = ((xianjia - shoupan) / shoupan * 100).toStringAsFixed(2);
     var zhangdieColor = xianjia - shoupan;
     var zhangdie = (xianjia - shoupan).toStringAsFixed(2);
+    var chengjiaoliang =
+        (double.parse(this._selfData[index][8]!.toString()) / 100)
+            .toStringAsFixed(0);
+    var chengjiaoe =
+        (double.parse(this._selfData[index][9]!.toString()) / 10000)
+            .toStringAsFixed(0);
+    var zuigaoColor =
+        double.parse(this._selfData[index][4]!.toString()) - xianjia;
+    var zuidiColor =
+        double.parse(this._selfData[index][5]!.toString()) - xianjia;
     // var zhangfuColor;
     // if (zhangfunum > 0) {
     //   var zhangfuColor = Colors.red;
@@ -221,33 +270,123 @@ class _SelfPageTestState extends State<SelfPageTest> {
         //   alignment: Alignment.centerLeft,
         // ),
         Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
           child: Text(
             zuixin.substring(0, zuixin.length - 1),
           ),
           width: 100,
-          height: 52,
+          height: 32,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
         ),
         Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
           child: Text(
             zhangfu,
             style:
                 TextStyle(color: zhangfuColor > 0 ? Colors.red : Colors.green),
           ),
           width: 100,
-          height: 52,
+          height: 32,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
         ),
         Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
           child: Text(
             zhangdie,
             style:
                 TextStyle(color: zhangdieColor > 0 ? Colors.red : Colors.green),
           ),
-          width: 200,
-          height: 52,
+          width: 100,
+          height: 32,
+          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          //成交量
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
+          child: Text(chengjiaoliang),
+          width: 100,
+          height: 32,
+          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          //成交额
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
+          child: Text(chengjiaoe),
+          width: 100,
+          height: 32,
+          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          //开盘
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
+          child: Text(
+            this._selfData[index][1]!.toString(),
+            style:
+                TextStyle(color: zhangdieColor > 0 ? Colors.red : Colors.green),
+          ),
+          width: 100,
+          height: 32,
+          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          //昨收
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
+          child: Text(
+            this._selfData[index][2]!.toString(),
+          ),
+          width: 100,
+          height: 32,
+          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          //最高
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
+          child: Text(
+            double.parse(this._selfData[index][4]!.toString())
+                .toStringAsFixed(2),
+            style:
+                TextStyle(color: zuigaoColor > 0 ? Colors.red : Colors.green),
+          ),
+          width: 100,
+          height: 32,
+          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+        ),
+        Container(
+          //最低
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
+          child: Text(
+            double.parse(this._selfData[index][5]!.toString())
+                .toStringAsFixed(2),
+            style: TextStyle(color: zuidiColor > 0 ? Colors.red : Colors.green),
+          ),
+          width: 100,
+          height: 32,
           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.centerLeft,
         ),
