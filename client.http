@@ -1,8 +1,8 @@
-POST   http://192.168.1.2:8080/gpapp/getCategory HTTP/1.1
+POST   http://localhost:8080/gpapp/getCategory HTTP/1.1
 
 
-
-
+### 自选
+POST   http://localhost:8080/gpapp/getSelfSelect
 
 
 ###发送form-urlencoded数据

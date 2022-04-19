@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:fast_gbk/fast_gbk.dart';
 import 'package:flutter/material.dart';
-import 'package:hmgpapp/common/Color.dart';
+import 'package:hmgpapp/model/SelfSelectModel.dart';
+import '../../common/Color.dart';
+import '../../config/Config.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
 class SelfPageTest extends StatefulWidget {
@@ -27,22 +30,41 @@ class _SelfPageTestState extends State<SelfPageTest> {
     return result;
   }
 
+  late Timer _timer;
   @override
   void initState() {
     user.initData(100);
+    _timer = Timer.periodic(Duration(seconds: 10), (_) => _getSelctData());
     super.initState();
     _getSelctData();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   _getSelctData() async {
     // FormData formData = FormData.fromMap({
     //   "pid": widget.arguments['id'],
     // });
+    var selfApi = '${Config.domain}gpapp/getSelfSelect';
+    var selefResult = await Dio().post(selfApi);
+    var selfSelectList = SelfSelectModel.fromJson(selefResult.data);
+    var selfSelectString = "";
+    selfSelectList.data?.forEach((value) {
+      selfSelectString =
+          selfSelectString + "${value.sector}" + "${value.code}" + ",";
+    });
+    var selfCode = selfSelectString.substring(0, selfSelectString.length - 1);
+    print(selfCode);
+    //下面是股票数据
     BaseOptions options = BaseOptions();
     options.responseDecoder = gbkDecoder;
     Dio dio = new Dio(options);
     dio.options.headers["Referer"] = 'https://finance.sina.com.cn/';
-    var api = 'http://hq.sinajs.cn/list=sh601688,sh601003,sh601001';
+    var api = 'http://hq.sinajs.cn/list=' + selfCode;
     var result = await dio.get(api);
 
     print(result.data);
@@ -53,19 +75,35 @@ class _SelfPageTestState extends State<SelfPageTest> {
     list.removeLast();
     print(list.length);
     List<List<String>> stockInfo = [];
+    List<String> stocknew = [];
     for (String value in list) {
-      RegExp stock = new RegExp("var hq_str_sh([^}]+)=");
+      RegExp stock = RegExp("var hq_str_s[hz]([^}]+)=");
+      // RegExp stocksss = new RegExp("var hq_str_sz([^}]+)=");
+
       var stockNumber = stock.firstMatch(value);
+      // var stockNumbersss = stocksss.firstMatch(value);
       var stockNumberOne = stockNumber!.group(1);
+      print("好好好好");
+      print(stockNumberOne);
+      // if (stockNumber!.group(1) == null) {}
       var stockNumberOnes = stockNumberOne!.toLowerCase();
-      RegExp r = new RegExp("\"([^}]+),\"");
+      print(stockNumberOnes);
+
+      // var rrrr = find(value);
+      // print(rrrr);
+      RegExp r =
+          RegExp("var hq_str_s[hz][0-9][0-9][0-9][0-9][0-9][0-9]=\"([^}]+)\"");
       var rnum = r.firstMatch(value);
       var rnumber = rnum!.group(1);
-      List<String> stockNumberTwo = rnumber!.split(',');
-      stockNumberTwo.add(stockNumberOnes);
+      print(rnumber);
+      var rnumbers = rnumber?.toLowerCase();
+      print(rnumbers);
+      List<String> stockNumberTwo = rnumbers!.split(',');
+      stockNumberTwo.insert(0, stockNumberOnes);
       stockInfo.add(stockNumberTwo);
     }
     stockInfo.add([]);
+    print("是吗");
     print(stockInfo);
     setState(() {
       this._selfData = stockInfo;
@@ -206,12 +244,12 @@ class _SelfPageTestState extends State<SelfPageTest> {
       child: Column(
         children: [
           Text(
-            this._selfData[index][0]!.toString(),
+            this._selfData[index][1]!.toString(),
             style: TextStyle(
                 fontSize: 12, fontWeight: FontWeight.w500, color: Colour.black),
           ),
           Text(
-            this._selfData[index][33]!.toString(),
+            this._selfData[index][0]!.toString(),
             style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w400,
@@ -227,23 +265,23 @@ class _SelfPageTestState extends State<SelfPageTest> {
   }
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
-    var zuixin = this._selfData[index][3]!.toString();
+    var zuixin = this._selfData[index][4]!.toString();
     var xianjia = double.parse(zuixin);
-    var shoupan = double.parse(this._selfData[index][2]!.toString());
+    var shoupan = double.parse(this._selfData[index][3]!.toString());
     var zhangfuColor = (xianjia - shoupan) / shoupan * 100;
     var zhangfu = ((xianjia - shoupan) / shoupan * 100).toStringAsFixed(2);
     var zhangdieColor = xianjia - shoupan;
     var zhangdie = (xianjia - shoupan).toStringAsFixed(2);
     var chengjiaoliang =
-        (double.parse(this._selfData[index][8]!.toString()) / 100)
+        (double.parse(this._selfData[index][9]!.toString()) / 100)
             .toStringAsFixed(0);
     var chengjiaoe =
-        (double.parse(this._selfData[index][9]!.toString()) / 10000)
+        (double.parse(this._selfData[index][10]!.toString()) / 10000)
             .toStringAsFixed(0);
     var zuigaoColor =
-        double.parse(this._selfData[index][4]!.toString()) - xianjia;
-    var zuidiColor =
         double.parse(this._selfData[index][5]!.toString()) - xianjia;
+    var zuidiColor =
+        double.parse(this._selfData[index][6]!.toString()) - xianjia;
     // var zhangfuColor;
     // if (zhangfunum > 0) {
     //   var zhangfuColor = Colors.red;
@@ -337,7 +375,7 @@ class _SelfPageTestState extends State<SelfPageTest> {
               border: Border(
                   bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
           child: Text(
-            this._selfData[index][1]!.toString(),
+            this._selfData[index][2]!.toString(),
             style:
                 TextStyle(color: zhangdieColor > 0 ? Colors.red : Colors.green),
           ),
@@ -352,7 +390,7 @@ class _SelfPageTestState extends State<SelfPageTest> {
               border: Border(
                   bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
           child: Text(
-            this._selfData[index][2]!.toString(),
+            this._selfData[index][3]!.toString(),
           ),
           width: 100,
           height: 32,
@@ -365,7 +403,7 @@ class _SelfPageTestState extends State<SelfPageTest> {
               border: Border(
                   bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
           child: Text(
-            double.parse(this._selfData[index][4]!.toString())
+            double.parse(this._selfData[index][5]!.toString())
                 .toStringAsFixed(2),
             style:
                 TextStyle(color: zuigaoColor > 0 ? Colors.red : Colors.green),
@@ -381,7 +419,7 @@ class _SelfPageTestState extends State<SelfPageTest> {
               border: Border(
                   bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
           child: Text(
-            double.parse(this._selfData[index][5]!.toString())
+            double.parse(this._selfData[index][6]!.toString())
                 .toStringAsFixed(2),
             style: TextStyle(color: zuidiColor > 0 ? Colors.red : Colors.green),
           ),
@@ -443,4 +481,10 @@ class UserInfo {
 
   UserInfo(this.name, this.status, this.phone, this.registerDate,
       this.terminationDate);
+}
+
+String find(String str) {
+  RegExp exp = RegExp("\"([^}]+),\"");
+  RegExpMatch? match = exp.firstMatch(str);
+  return match?.group(1) ?? '';
 }
