@@ -31,8 +31,9 @@ class _TabsState extends State<Tabs> {
 
   List<Widget> _pageList = [
     HomePage(),
-    SelfPage(),
     SelfPageTest(),
+    SelfPage(),
+    // SelfPageTest(),
     // CartPage(),
     // UserPage(),
   ];
@@ -111,7 +112,7 @@ class _TabsState extends State<Tabs> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Iconme.food),
-            label: '食谱',
+            label: '自选测试',
           ),
           BottomNavigationBarItem(
             icon: Icon(Iconme.record),
