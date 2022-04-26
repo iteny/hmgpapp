@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../pages/SelfContent.dart';
 import '../pages/CategoryContent.dart';
 import '../pages/tabs.dart';
 // import 'package:jdshop/pages/ProductContent.dart';
@@ -13,6 +14,7 @@ final routes = {
   //     ProductListPage(arguments: arguments),
   '/categoryContent': (context, {arguments}) =>
       CategoryContentPage(arguments: arguments),
+  '/selfContent': (context, {arguments}) => SelfContent(arguments: arguments),
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {

@@ -4,7 +4,10 @@ import 'dart:ffi';
 import 'package:dio/dio.dart';
 import 'package:fast_gbk/fast_gbk.dart';
 import 'package:flutter/material.dart';
-import 'package:hmgpapp/model/SelfSelectModel.dart';
+import '../../common/Icons.dart';
+import '../../model/SelfSelectModel.dart';
+import '../../widget/IconsButton.dart';
+import '../../widget/TextsButton.dart';
 import '../../common/Color.dart';
 import '../../config/Config.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
@@ -34,7 +37,7 @@ class _SelfPageTestState extends State<SelfPageTest> {
   @override
   void initState() {
     user.initData(100);
-    _timer = Timer.periodic(Duration(seconds: 10), (_) => _getSelctData());
+    // _timer = Timer.periodic(Duration(seconds: 10), (_) => _getSelctData());
     super.initState();
     _getSelctData();
   }
@@ -153,7 +156,7 @@ class _SelfPageTestState extends State<SelfPageTest> {
           thickness: 1.5,
           radius: Radius.circular(5.0),
         ),
-        enablePullToRefresh: true,
+        enablePullToRefresh: false,
         refreshIndicator: const WaterDropHeader(),
         refreshIndicatorHeight: 10,
         onRefresh: () async {
@@ -288,6 +291,7 @@ class _SelfPageTestState extends State<SelfPageTest> {
     // } else {
     //   var zhangfuColor = Colors.green;
     // }
+    var stockCode = this._selfData[index][0]!.toString();
     return Row(
       children: <Widget>[
         // Container(
@@ -311,8 +315,20 @@ class _SelfPageTestState extends State<SelfPageTest> {
           decoration: BoxDecoration(
               border: Border(
                   bottom: BorderSide(width: 0.5, color: Color(0x66666666)))),
-          child: Text(
-            zuixin.substring(0, zuixin.length - 1),
+          child: Row(
+            children: [
+              Text(
+                zuixin.substring(0, zuixin.length - 1),
+              ),
+              TextsButton(
+                color: Colour.blue,
+                text: "详情",
+                click: () {
+                  Navigator.pushNamed(context, '/selfContent',
+                      arguments: {"stockCode": stockCode});
+                },
+              ),
+            ],
           ),
           width: 100,
           height: 32,
